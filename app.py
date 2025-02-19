@@ -5,7 +5,13 @@ import json
 from datetime import datetime
 import pytz
 
+# 1) Import CORS
+from flask_cors import CORS
+
 app = Flask(__name__)
+
+# 2) Enable CORS
+CORS(app)
 
 ###################################################
 # REPLACE THESE WITH YOUR REAL API KEYS
