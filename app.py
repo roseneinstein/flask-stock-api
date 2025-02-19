@@ -264,6 +264,46 @@ def search_symbols():
     # 4) Return the JSON from Finnhub directly to React
     return jsonify(resp)
 
+@app.route("/search", methods=["GET"])
+def search_symbols():
+    query = request.args.get("query")
+    market = request.args.get("market")  # "CRYPTO", "IN", or "GLOBAL"
+
+    if not query:
+        return jsonify({"error": "Missing query"}), 400
+    if not market:
+        return jsonify({"error": "Missing market"}), 400
+
+    if market == "CRYPTO":
+        # Call CoinGecko search endpoint
+        url = f"https://api.coingecko.com/api/v3/search?query={query}"
+        resp = requests.get(url).json()
+
+        # 'resp["coins"]' is a list of coins
+        # Each coin has { id, symbol, name, ... }
+        if "coins" in resp:
+            # We'll convert it into a standardized format
+            results = []
+            for coin in resp["coins"]:
+                # coin["id"], coin["symbol"], coin["name"]
+                item = {
+                    "symbol": coin["symbol"].upper(), 
+                    "description": coin["name"]
+                }
+                results.append(item)
+            return jsonify({"result": results})
+        else:
+            return jsonify({"result": []})
+
+    else:
+        # For IN or GLOBAL, call Finnhub
+        # (same code as your old search, but we can handle both IN and GLOBAL the same)
+        finnhub_url = f"https://finnhub.io/api/v1/search?q={query}&token={FINNHUB_API_KEY}"
+        finnhub_resp = requests.get(finnhub_url).json()
+        # Typically finnhub_resp = {"count":..., "result":[{"symbol":"AAPL","description":"APPLE INC",...}]}
+        return jsonify(finnhub_resp)
+
+
 
 if __name__ == "__main__":
     app.run(debug=True)
