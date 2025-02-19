@@ -238,5 +238,10 @@ def stock():
         "market_status": market_status
     })
 
+@app.route("/")
+def home():
+    return "Welcome to my Flask Stock API!"
+
+
 if __name__ == "__main__":
     app.run(debug=True)
