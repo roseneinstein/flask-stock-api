@@ -248,21 +248,7 @@ def stock():
 def home():
     return "Welcome to my Flask Stock API!"
 
-@app.route("/search", methods=["GET"])
-def search_symbols():
-    # 1) Get the user’s query from the URL
-    query = request.args.get("query")
-    if not query:
-        return jsonify({"error": "Missing query parameter"}), 400
 
-    # 2) Build the Finnhub URL
-    url = f"https://finnhub.io/api/v1/search?q={query}&token={FINNHUB_API_KEY}"
-
-    # 3) Call Finnhub
-    resp = requests.get(url).json()
-
-    # 4) Return the JSON from Finnhub directly to React
-    return jsonify(resp)
 
 @app.route("/search", methods=["GET"])
 def search_symbols():
